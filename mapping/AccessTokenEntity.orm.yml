@@ -1,0 +1,32 @@
+League\OAuth2\Server\Entity\AccessTokenEntity:
+  type: entity
+#  repositoryClass: Doctrine\Tests\ORM\Mapping\UserRepository
+  table: oauth_access_tokens
+  readOnly: false
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    expireTime:
+      type: integer
+      length: 25
+  oneToOne:
+    session:
+      targetEntity: SessionEntity
+      inversedBy: accessToken
+      joinColumn:
+        name: session_id
+        referencedColumnName: id
+  manyToMany:
+    scopes:
+      targetEntity: ScopeEntity
+      joinTable:
+        name: oauth_access_token_scopes
+        joinColumns:
+          access_token_id:
+            referencedColumnName: id
+        inverseJoinColumns:
+          scope_id:
+            referencedColumnName: id
