@@ -1,0 +1,14 @@
+League\OAuth2\Server\Entity\ScopeEntity:
+  type: entity
+#  repositoryClass: Doctrine\Tests\ORM\Mapping\UserRepository
+  table: oauth_scopes
+  readOnly: false
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    description:
+      type: string
+      length: 255
