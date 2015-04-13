@@ -1,0 +1,19 @@
+{
+    "autoload": {
+        "psr-0": {"Mouf": "src/"},
+        "files" : []
+    },
+    "require": {
+        "mouf/mouf": "~2.0",
+        "mouf/mvc.splash": "~5.1",
+        "mouf/security.userservice": "~2.1",
+        "mouf/security.userservice-splash": "4.*",
+        "mouf/security.simplelogincontroller": "3.*",
+        "mouf/security.rightsservice-splash": "~4.0",
+        "mouf/utils.session.session-manager": "~2.0",
+        "mouf/database.doctrine-orm-wrapper": "dev-master",
+        "league/oauth2-server": "dev-master"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

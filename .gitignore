@@ -4,4 +4,4 @@ resources/
 mouf/
 composer.lock
 dump.sql
-
+.composer/
