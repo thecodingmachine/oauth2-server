@@ -1,6 +1,7 @@
 <?php
 namespace Mouf\OauthServer;
 
+use Mouf\Doctrine\ORM\Admin\DoctrineInstallUtils;
 use Mouf\Installer\PackageInstallerInterface;
 use Mouf\MoufManager;
 

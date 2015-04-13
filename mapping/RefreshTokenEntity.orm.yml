@@ -31,7 +31,7 @@ League\OAuth2\Server\Entity\RefreshTokenEntity:
     scopes:
       targetEntity: ScopeEntity
       joinTable:
-        name: oauth_access_token_scopes
+        name: oauth_refresh_token_scopes
         joinColumns:
           access_token_id:
             referencedColumnName: id

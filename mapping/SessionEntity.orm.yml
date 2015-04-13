@@ -35,7 +35,7 @@ League\OAuth2\Server\Entity\SessionEntity:
     scopes:
       targetEntity: ScopeEntity
       joinTable:
-        name: oauth_access_token_scopes
+        name: oauth_session_token_scopes
         joinColumns:
           access_token_id:
             referencedColumnName: id
