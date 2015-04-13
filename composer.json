@@ -1,4 +1,25 @@
 {
+    "name": "mouf/oauth2-server",
+    "description": "This package is a full-stack implementation of a OAuth2 server for Mouf framework based on phpleague/oauth2-server package.",
+    "type": "mouf-library",
+    "keywords": ["oauth", "oauth2", "mouf"],
+    "homepage": "http://mouf-php.com/packages/mouf/oauth2-server",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "David Négrier",
+            "email": "d.negrier@thecodingmachine.com",
+            "homepage": "http://mouf-php.com"
+        },
+        {
+            "name": "Romain Marrot",
+            "email": "r.marrot@thecodingmachine.com",
+            "homepage": "http://mouf-php.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/thecodingmachine/oauth2-server/issues"
+    },
     "autoload": {
         "psr-0": {"Mouf": "src/"},
         "files" : []
@@ -12,7 +33,16 @@
         "mouf/security.rightsservice-splash": "~4.0",
         "mouf/utils.session.session-manager": "~2.0",
         "mouf/database.doctrine-orm-wrapper": "dev-master",
-        "league/oauth2-server": "dev-master"
+        "league/oauth2-server": "~4.1.3"
+    },
+    "extra" : {
+        "mouf" : {
+            "install" : [{
+                "type" : "class",
+                "url" : "Mouf\\OauthServer\\OauthServerInstaller"
+            }
+            ]
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
