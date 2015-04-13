@@ -39,7 +39,7 @@
         "mouf" : {
             "install" : [{
                 "type" : "class",
-                "url" : "Mouf\\OauthServer\\OauthServerInstaller"
+                "class" : "Mouf\\OauthServer\\OauthServerInstaller"
             }
             ]
         }
