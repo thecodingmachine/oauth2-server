@@ -29,7 +29,12 @@ class SessionRepository extends EntityRepository implements SessionInterface
      */
     public function getByAccessToken(AccessTokenEntity $accessToken)
     {
-        // TODO: Implement getByAccessToken() method.
+        $temp = $this->find($accessToken);
+
+        $session = new SessionEntity($this->server);
+        $session->setId($temp->getId());
+        $session->setOwner($temp->getOwnerType(), $temp->getOwener());
+        return $session;
     }
 
     /**
