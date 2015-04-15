@@ -33,14 +33,14 @@ class Session
      *
      * @ORM\Column(name="owner_id", type="string", length=255)
      */
-    protected $owner_id;
+    protected $owner;
 
     /**
      * @var string
      *
-     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\OauthClient", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\Client", cascade={"persist"})
      */
-    protected $client_id;
+    protected $client;
 
     /**
      * @var string
