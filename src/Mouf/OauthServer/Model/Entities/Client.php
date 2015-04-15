@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="oauth_clients")
  * @ORM\Entity()
  */
-class OauthClient
+class Client
 {
     /**
      * @var string

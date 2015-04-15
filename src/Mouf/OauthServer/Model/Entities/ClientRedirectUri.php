@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="oauth_client_redirect_uris")
  * @ORM\Entity()
  */
-class OauthClientRedirectUri
+class ClientRedirectUri
 {
     /**
      * @var integer

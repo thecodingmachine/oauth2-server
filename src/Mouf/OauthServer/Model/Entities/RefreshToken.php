@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="oauth_refresh_tokens")
  * @ORM\Entity()
  */
-class OauthRefreshToken
+class RefreshToken
 {
     /**
      * @var string
@@ -28,9 +28,9 @@ class OauthRefreshToken
     protected $expire_token;
 
     /**
-     * @var \Mouf\OauthServer\Model\Entities\OauthAccessToken
+     * @var \Mouf\OauthServer\Model\Entities\AccessToken
      *
-     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\OauthAccessToken", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\AccessToken", cascade={"persist"})
      */
     protected $access_token;
 

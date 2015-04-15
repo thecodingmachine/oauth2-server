@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="oauth_auth_code_scopes")
  * @ORM\Entity()
  */
-class OauthAuthCodeScope
+class AuthCodeScope
 {
     /**
      * @var integer
@@ -22,16 +22,16 @@ class OauthAuthCodeScope
     protected $id;
 
     /**
-     * @var \Mouf\OauthServer\Model\Entities\OauthAuthCode
+     * @var \Mouf\OauthServer\Model\Entities\AuthCode
      *
-     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\OauthAuthCode", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\AuthCode", cascade={"persist"})
      */
     protected $auth_code;
 
     /**
-     * @var \Mouf\OauthServer\Model\Entities\OauthScope
+     * @var \Mouf\OauthServer\Model\Entities\Scope
      *
-     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\OauthScope", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\Scope", cascade={"persist"})
      */
     protected $scope;
 

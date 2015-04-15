@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="oauth_session_scopes")
  * @ORM\Entity()
  */
-class OauthSessionScope
+class SessionScope
 {
     /**
      * @var integer
@@ -22,16 +22,16 @@ class OauthSessionScope
     protected $id;
 
     /**
-     * @var \Mouf\OauthServer\Model\Entities\OauthSession
+     * @var \Mouf\OauthServer\Model\Entities\Session
      *
-     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\OauthSession", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\Session", cascade={"persist"})
      */
     protected $session_id;
 
     /**
-     * @var \Mouf\OauthServer\Model\Entities\OauthScope
+     * @var \Mouf\OauthServer\Model\Entities\Scope
      *
-     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\OauthScope", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\Scope", cascade={"persist"})
      */
     protected $scope;
 
