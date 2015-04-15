@@ -30,7 +30,7 @@ class AccessToken
     /**
      * @var integer
      *
-     * @ORM\Column(nam="expire_time", type="integer", length=25)
+     * @ORM\Column(name="expire_time", type="integer", length=25)
      */
     protected $expire_time;
 
