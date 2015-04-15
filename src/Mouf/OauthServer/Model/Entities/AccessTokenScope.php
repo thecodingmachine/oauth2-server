@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="oauth_access_token_scopes")
  * @ORM\Entity()
  */
-class OauthAccessTokenScope
+class AccessTokenScope
 {
     /**
      * @var integer
@@ -22,16 +22,16 @@ class OauthAccessTokenScope
     protected $id;
 
     /**
-     * @var \Mouf\OauthServer\Model\Entities\OauthAccessToken
+     * @var \Mouf\OauthServer\Model\Entities\AccessToken
      *
-     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\OauthAccessToken", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\AccessToken", cascade={"persist"})
      */
     protected $access_token;
 
     /**
      * @var \Mouf\OauthServer\Model\Entities\OauthScope
      *
-     * @ORM\MAnyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\OauthScope", cascade={"persist"})
+     * @ORM\MAnyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\Scope", cascade={"persist"})
      */
     protected $scope;
 
@@ -70,7 +70,7 @@ class OauthAccessTokenScope
     }
 
     /**
-     * @return OauthAccessToken
+     * @return AccessToken
      */
     public function getAccessToken()
     {
@@ -78,7 +78,7 @@ class OauthAccessTokenScope
     }
 
     /**
-     * @param OauthAccessToken $access_token
+     * @param AccessToken $access_token
      */
     public function setAccessToken($access_token)
     {

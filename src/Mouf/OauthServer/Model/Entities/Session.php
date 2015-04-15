@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="oauth_sessions")
  * @ORM\Entity()
  */
-class OauthSession
+class Session
 {
     /**
      * @var integer
