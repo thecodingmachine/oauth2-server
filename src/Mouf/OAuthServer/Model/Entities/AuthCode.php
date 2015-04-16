@@ -2,12 +2,13 @@
 
 namespace Mouf\OauthServer\Model\Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Account
  *
- * @ORM\Table(name="oauth_auth_codes")
+ * @ORM\Table(name="oauth__auth_codes")
  * @ORM\Entity()
  */
 class AuthCode
@@ -43,10 +44,22 @@ class AuthCode
     protected $client_redirect_uri;
 
     /**
+     * @var \Mouf\OAuthServer\Model\Entities\Scope[]
+     *
+     * @ManyToMany(targetEntity="\Mouf\OAuthServer\Model\Entities\Scope")
+     * @JoinTable(name="oauth__auth_code_scopes",
+     *      joinColumns={@JoinColumn(name="auth_code_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="scope_id", referencedColumnName="id")}
+     *      )
+     **/
+    private $scopes;
+
+    /**
      * __construct
      */
     public function __construct()
     {
+        $this->scopes = new ArrayCollection();
     }
 
     /**
@@ -111,5 +124,29 @@ class AuthCode
     public function setSessionId($session_id)
     {
         $this->session_id = $session_id;
+    }
+
+    /**
+     * @return \Mouf\OAuthServer\Model\Entities\Scope[]
+     */
+    public function getScopes()
+    {
+        return $this->scopes;
+    }
+
+    /**
+     * @param \Mouf\OAuthServer\Model\Entities\Scope[] $scopes
+     */
+    public function setScopes($scopes)
+    {
+        $this->scopes = $scopes;
+    }
+
+    /**
+     *  @param \Mouf\OAuthServer\Model\Entities\Scope $scope
+     */
+    public function addScope(Scope $scope)
+    {
+        $this->scopes->add($scope);
     }
 }

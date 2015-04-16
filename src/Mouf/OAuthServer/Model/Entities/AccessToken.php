@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Account
  *
- * @ORM\Table(name="oauth_access_tokens")
+ * @ORM\Table(name="oauth__access_tokens")
  * @ORM\Entity()
  */
 class AccessToken
@@ -39,7 +39,7 @@ class AccessToken
      * @var \Mouf\OAuthServer\Model\Entities\Scope[]
      *
      * @ManyToMany(targetEntity="\Mouf\OAuthServer\Model\Entities\Scope")
-     * @JoinTable(name="oauth_access_token_scopes",
+     * @JoinTable(name="oauth__access_token_scopes",
      *      joinColumns={@JoinColumn(name="access_token_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="scope_id", referencedColumnName="id")}
      *      )
@@ -120,9 +120,9 @@ class AccessToken
     }
 
     /**
-     *
+     * @param \Mouf\OAuthServer\Model\Entities\Scope $scope
      */
-    public function addScope($scope)
+    public function addScope(Scope $scope)
     {
         $this->scopes->add($scope);
     }

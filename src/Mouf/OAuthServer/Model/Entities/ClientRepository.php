@@ -3,15 +3,9 @@
 namespace Mouf\OauthServer\Model\Entities;
 
 use League\OAuth2\Server\AbstractServer;
-use League\OAuth2\Server\Entity\AccessTokenEntity;
-use League\OAuth2\Server\Entity\AuthCodeEntity;
-use League\OAuth2\Server\Entity\ScopeEntity;
+use League\OAuth2\Server\Entity\ClientEntity;
 use League\OAuth2\Server\Entity\SessionEntity;
-use League\OAuth2\Server\Storage\AbstractStorage;
-use League\OAuth2\Server\Storage\AccessTokenInterface;
-use League\OAuth2\Server\Storage\AuthCodeInterface;
 use League\OAuth2\Server\Storage\ClientInterface;
-use Mouf\Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
 class ClientRepository extends EntityRepository implements ClientInterface
@@ -29,7 +23,26 @@ class ClientRepository extends EntityRepository implements ClientInterface
      */
     public function get($clientId, $clientSecret = null, $redirectUri = null, $grantType = null)
     {
-        // TODO: Implement get() method.
+        $query = $this->createQueryBuilder('c')
+            ->where('c.id = :id');
+        $params = array('id' => $clientId);
+
+        if($clientSecret !== null){
+            $query->andWhere('c.secret = :secret');
+            $params['secret'] = $clientSecret;
+        }
+
+        $temp = $query->setParameters($params)->getQuery()->getOneOrNullResult();
+
+        if(is_object($temp)){
+            $client = new ClientEntity($this->server);
+            $client->hydrate([
+                'id'    =>  $temp->getId(),
+                'name'  =>  $temp->getName(),
+            ]);
+            return $client;
+        }
+        return null;
     }
 
     /**
@@ -41,7 +54,24 @@ class ClientRepository extends EntityRepository implements ClientInterface
      */
     public function getBySession(SessionEntity $session)
     {
-        // TODO: Implement getBySession() method.
+        $temp = $this->createQueryBuilder('c')
+            ->join('Mouf\OAuthServer\Model\Entities\Session', 's', 'c.id = s.client_id')
+            ->where('s.id = :id')
+            ->setParameters(array(
+                'id'    => $session->getId()
+            ))
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if(is_object($temp)){
+            $client = new ClientEntity($this->server);
+            $client->hydrate([
+                'id'    =>  $temp->getId(),
+                'name'  =>  $temp->getName(),
+            ]);
+            return $client;
+        }
+        return null;
     }
 
     /**

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Account
  *
- * @ORM\Table(name="oauth_refresh_tokens")
+ * @ORM\Table(name="oauth__refresh_tokens")
  * @ORM\Entity()
  */
 class RefreshToken

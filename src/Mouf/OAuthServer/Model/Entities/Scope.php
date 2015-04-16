@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Account
  *
- * @ORM\Table(name="oauth_scopes")
+ * @ORM\Table(name="oauth__scopes")
  * @ORM\Entity()
  */
 class Scope

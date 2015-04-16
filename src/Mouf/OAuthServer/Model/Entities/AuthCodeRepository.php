@@ -20,7 +20,24 @@ class AuthCodeRepository extends EntityRepository implements AuthCodeInterface
      */
     public function get($code)
     {
-//        @todo
+        $temp = $this->createQueryBuilder('a')
+            ->where('a.id = :id')
+            ->andWhere('a.expire_time >= NOW()')
+            ->setParameters(array(
+                'id'    => $code
+            ))
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+
+        if(is_object($temp)){
+            $token = new AuthCodeEntity($this->server);
+            $token->setId($temp->getId());
+            $token->setRedirectUri($temp->getClientRedirectUri);
+            $token->setExpireTime($temp->getExpireTime());
+            return $token;
+        }
+        return null;
     }
 
     /**
@@ -55,7 +72,20 @@ class AuthCodeRepository extends EntityRepository implements AuthCodeInterface
      */
     public function getScopes(AuthCodeEntity $token)
     {
-        // TODO: Implement getScopes() method.
+        $temp = $this->find($token->getId());
+
+        $response = array();
+        if(is_object($temp)){
+            foreach($temp->getScopes() as $scp){
+                $scope = (new ScopeEntity($this->server))->hydrate([
+                    'id'            =>  $scp->getId(),
+                    'description'   =>  $scp->getDescription(),
+                ]);
+                $response[] = $scope;
+            }
+        }
+
+        return $response;
     }
 
     /**
@@ -68,7 +98,15 @@ class AuthCodeRepository extends EntityRepository implements AuthCodeInterface
      */
     public function associateScope(AuthCodeEntity $token, ScopeEntity $scope)
     {
-        // TODO: Implement associateScope() method.
+        $_em = $this->getEntityManager();
+        $tempToken = $this->find($token->getId());
+        $tempScope = $this->getEntityManager()->getRepository('Mouf\OAuthServer\Model\Entities\ScopeRepository')->find($scope->getId());
+
+        if(is_object($tempToken) && is_object($tempScope)){
+            $tempToken->addScope($tempScope);
+            $_em->persist($tempToken);
+            $_em->flush();
+        }
     }
 
     /**

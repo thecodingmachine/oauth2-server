@@ -19,12 +19,15 @@ class RefreshTokenRepository extends EntityRepository implements RefreshTokenInt
      */
     public function get($token)
     {
-        return ($temp = $this->find($token)) ?
+        $temp = $this->find($token);
+
+        if(is_object($temp)){
             (new RefreshTokenEntity($this->server))
                 ->setId($temp->getId())
                 ->setExpireTime($temp->getExpireTime())
-                ->setAccessTokenId($temp->getAccessToken()) :
-            null;
+                ->setAccessTokenId($temp->getAccessToken());
+        }
+        return null;
     }
 
     /**

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Account
  *
- * @ORM\Table(name="oauth_clients")
+ * @ORM\Table(name="oauth__clients")
  * @ORM\Entity()
  */
 class Client

@@ -21,7 +21,22 @@ class SessionRepository extends EntityRepository implements SessionInterface
      */
     public function getByAccessToken(AccessTokenEntity $accessToken)
     {
-        //@todo
+        $temp = $this->createQueryBuilder('s')
+            ->join('Mouf\OAuthServer\Model\Entities\AccessToken', 'a', 's.id = a.session_id')
+            ->where('a.id = :id')
+            ->setParameters(array(
+                'id'    => $accessToken->getId()
+            ))
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if(is_object($temp)){
+            $session = new SessionEntity($this->server);
+            $session->setId($temp->getId());
+            $session->setOwner($temp->getOwnerType(), $temp->getOwnerId());
+            return $session;
+        }
+        return null;
     }
 
     /**
@@ -33,7 +48,22 @@ class SessionRepository extends EntityRepository implements SessionInterface
      */
     public function getByAuthCode(AuthCodeEntity $authCode)
     {
-        // TODO: Implement getByAuthCode() method.
+        $temp = $this->createQueryBuilder('s')
+            ->join('Mouf\OAuthServer\Model\Entities\AuthCode', 'a', 's.id = a.session_id')
+            ->where('a.id = :id')
+            ->setParameters(array(
+                'id'    => $authCode->getId()
+            ))
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if(is_object($temp)){
+            $session = new SessionEntity($this->server);
+            $session->setId($temp->getId());
+            $session->setOwner($temp->getOwnerType(), $temp->getOwnerId());
+            return $session;
+        }
+        return null;
     }
 
     /**
@@ -45,7 +75,20 @@ class SessionRepository extends EntityRepository implements SessionInterface
      */
     public function getScopes(SessionEntity $session)
     {
-        // TODO: Implement getScopes() method.
+        $temp = $this->find($session->getId());
+
+        $response = array();
+        if(is_object($temp)){
+            foreach($temp->getScopes() as $scp){
+                $scope = (new ScopeEntity($this->server))->hydrate([
+                    'id'            =>  $scp->getId(),
+                    'description'   =>  $scp->getDescription(),
+                ]);
+                $response[] = $scope;
+            }
+        }
+
+        return $response;
     }
 
     /**
@@ -81,7 +124,15 @@ class SessionRepository extends EntityRepository implements SessionInterface
      */
     public function associateScope(SessionEntity $session, ScopeEntity $scope)
     {
-        // TODO: Implement associateScope() method.
+        $_em = $this->getEntityManager();
+        $tempSession = $this->find($session->getId());
+        $tempScope = $this->getEntityManager()->getRepository('Mouf\OAuthServer\Model\Entities\ScopeRepository')->find($scope->getId());
+
+        if(is_object($tempSession) && is_object($tempScope)){
+            $tempSession->addScope($tempScope);
+            $_em->persist($tempSession);
+            $_em->flush();
+        }
     }
 
     /**

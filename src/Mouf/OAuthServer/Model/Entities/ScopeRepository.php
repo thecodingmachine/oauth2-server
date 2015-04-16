@@ -30,12 +30,16 @@ class ScopeRepository extends EntityRepository implements ScopeInterface
      */
     public function get($scope, $grantType = null, $clientId = null)
     {
-        return ($temp = $this->find($scope)) ?
-            (new ScopeEntity($this->server))->hydrate([
+        $temp = $this->find($scope);
+
+        if(is_object($temp)){
+            return (new ScopeEntity($this->server))->hydrate([
                 'id'            =>  $temp->getId(),
                 'description'   =>  $temp->getDescription(),
-            ]) :
-            null;
+            ]);
+        }
+
+        return null;
     }
 
     /**
