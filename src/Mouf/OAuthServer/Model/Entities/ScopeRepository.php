@@ -30,16 +30,42 @@ class ScopeRepository extends EntityRepository implements ScopeInterface
      */
     public function get($scope, $grantType = null, $clientId = null)
     {
-        // TODO: Implement get() method.
+        return ($temp = $this->find($scope)) ?
+            (new ScopeEntity($this->server))->hydrate([
+                'id'            =>  $temp->getId(),
+                'description'   =>  $temp->getDescription(),
+            ]) :
+            null;
     }
+
+    /**
+     * Server
+     *
+     * @var \League\OAuth2\Server\AbstractServer $server
+     */
+    protected $server;
 
     /**
      * Set the server
      *
      * @param \League\OAuth2\Server\AbstractServer $server
+     *
+     * @return self
      */
     public function setServer(AbstractServer $server)
     {
-        // TODO: Implement setServer() method.
+        $this->server = $server;
+
+        return $this;
+    }
+
+    /**
+     * Return the server
+     *
+     * @return \League\OAuth2\Server\AbstractServer
+     */
+    protected function getServer()
+    {
+        return $this->server;
     }
 }

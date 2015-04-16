@@ -5,9 +5,7 @@ namespace Mouf\OauthServer\Model\Entities;
 use League\OAuth2\Server\AbstractServer;
 use League\OAuth2\Server\Entity\AccessTokenEntity;
 use League\OAuth2\Server\Entity\ScopeEntity;
-use League\OAuth2\Server\Storage\AbstractStorage;
 use League\OAuth2\Server\Storage\AccessTokenInterface;
-use Mouf\Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
 class AccessTokenRepository extends EntityRepository implements AccessTokenInterface
@@ -22,11 +20,11 @@ class AccessTokenRepository extends EntityRepository implements AccessTokenInter
      */
     public function get($token)
     {
-        $temp = $this->find($token);
-
-        return (new AccessTokenEntity($this->server))
-            ->setId($temp->getId())
-            ->setExpireTime($temp->getExpireTime());
+        return ($temp = $this->find($token)) ?
+            (new AccessTokenEntity($this->server))
+                ->setId($temp->getId())
+                ->setExpireTime($temp->getExpireTime()) :
+            null;
     }
 
     /**
@@ -38,7 +36,19 @@ class AccessTokenRepository extends EntityRepository implements AccessTokenInter
      */
     public function getScopes(AccessTokenEntity $token)
     {
-        // TODO: Implement getScopes() method.
+        $temp = $this->find($token->getId());
+
+        $scopes = array();
+        if(is_object($temp)){
+            foreach($temp->getScopes() as $tempScope){
+                $scope = (new ScopeEntity($this->server))->hydrate([
+                    'id'            =>  $tempScope->getId(),
+                    'description'   =>  $tempScope->getDescription(),
+                ]);
+                $scopes[] = $scope;
+            }
+
+        }
     }
 
     /**
@@ -52,7 +62,14 @@ class AccessTokenRepository extends EntityRepository implements AccessTokenInter
      */
     public function create($token, $expireTime, $sessionId)
     {
-        // TODO: Implement create() method.
+        $newToken = new AccessToken();
+        $newToken->setId($token);
+        $newToken->setExpireTime($expireTime);
+        $newToken->setSessionId($sessionId);
+
+        $_em = $this->getEntityManager();
+        $_em->persist($newToken);
+        $_em->flush();
     }
 
     /**
@@ -65,7 +82,11 @@ class AccessTokenRepository extends EntityRepository implements AccessTokenInter
      */
     public function associateScope(AccessTokenEntity $token, ScopeEntity $scope)
     {
-        // TODO: Implement associateScope() method.
+        $tempToken = $this->find($token->getId());
+
+        if(is_object($tempToken)){
+            // @todo;
+        }
     }
 
     /**
@@ -77,7 +98,11 @@ class AccessTokenRepository extends EntityRepository implements AccessTokenInter
      */
     public function delete(AccessTokenEntity $token)
     {
-        // TODO: Implement delete() method.
+        $temp = $this->find($token->getId());
+
+        $_em = $this->getEntityManager();
+        $_em->remove($temp);
+        $_em->flush();
     }
 
     /**

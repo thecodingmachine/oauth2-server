@@ -5,17 +5,9 @@ namespace Mouf\OauthServer\Model\Entities;
 use League\OAuth2\Server\AbstractServer;
 use League\OAuth2\Server\Entity\AccessTokenEntity;
 use League\OAuth2\Server\Entity\AuthCodeEntity;
-use League\OAuth2\Server\Entity\RefreshTokenEntity;
 use League\OAuth2\Server\Entity\ScopeEntity;
 use League\OAuth2\Server\Entity\SessionEntity;
-use League\OAuth2\Server\Storage\AbstractStorage;
-use League\OAuth2\Server\Storage\AccessTokenInterface;
-use League\OAuth2\Server\Storage\AuthCodeInterface;
-use League\OAuth2\Server\Storage\ClientInterface;
-use League\OAuth2\Server\Storage\RefreshTokenInterface;
-use League\OAuth2\Server\Storage\ScopeInterface;
 use League\OAuth2\Server\Storage\SessionInterface;
-use Mouf\Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
 class SessionRepository extends EntityRepository implements SessionInterface
@@ -29,12 +21,7 @@ class SessionRepository extends EntityRepository implements SessionInterface
      */
     public function getByAccessToken(AccessTokenEntity $accessToken)
     {
-        $temp = $this->find($accessToken);
-
-        $session = new SessionEntity($this->server);
-        $session->setId($temp->getId());
-        $session->setOwner($temp->getOwnerType(), $temp->getOwener());
-        return $session;
+        //@todo
     }
 
     /**
@@ -73,7 +60,15 @@ class SessionRepository extends EntityRepository implements SessionInterface
      */
     public function create($ownerType, $ownerId, $clientId, $clientRedirectUri = null)
     {
-        // TODO: Implement create() method.
+        $session = new Session();
+        $session->setOwnerType($ownerType);
+        $session->setOwnerId($ownerId);
+        $session->setClientId($clientId);
+        $session->setClientRedirectUri($clientRedirectUri);
+
+        $_em = $this->getEntityManager();
+        $_em->persist($session);
+        $_em->flush();
     }
 
     /**
@@ -90,12 +85,33 @@ class SessionRepository extends EntityRepository implements SessionInterface
     }
 
     /**
+     * Server
+     *
+     * @var \League\OAuth2\Server\AbstractServer $server
+     */
+    protected $server;
+
+    /**
      * Set the server
      *
      * @param \League\OAuth2\Server\AbstractServer $server
+     *
+     * @return self
      */
     public function setServer(AbstractServer $server)
     {
-        // TODO: Implement setServer() method.
+        $this->server = $server;
+
+        return $this;
+    }
+
+    /**
+     * Return the server
+     *
+     * @return \League\OAuth2\Server\AbstractServer
+     */
+    protected function getServer()
+    {
+        return $this->server;
     }
 }

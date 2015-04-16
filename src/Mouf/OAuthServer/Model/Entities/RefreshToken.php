@@ -7,32 +7,32 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Account
  *
- * @ORM\Table(name="oauth_access_tokens")
+ * @ORM\Table(name="oauth_refresh_tokens")
  * @ORM\Entity()
  */
-class AccessToken
+class RefreshToken
 {
     /**
      * @var string
      *
-     * @ORM\Id
      * @ORM\Column(name="id", type="string", length=255)
+     * @ORM\Id
      */
     protected $id;
 
     /**
-     * @var \Mouf\OauthServer\Model\Entities\Session
-     *
-     * @ORM\OneToOne(targetEntity="\Mouf\OauthServer\Model\Entities\Session", cascade={"persist"})
-     */
-    protected $session;
-
-    /**
      * @var integer
      *
-     * @ORM\Column(name="expire_time", type="integer", length=25)
+     * @ORM\Column(name="expire_time", type="integer", length=255)
      */
     protected $expire_time;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="access_token", type="string", length=255)
+     */
+    protected $access_token;
 
 
     /**
@@ -51,19 +51,11 @@ class AccessToken
     }
 
     /**
-     * @return Session
+     * @param string $id
      */
-    public function getSession()
+    public function setId($id)
     {
-        return $this->session;
-    }
-
-    /**
-     * @param Session $session
-     */
-    public function setSession($session)
-    {
-        $this->session = $session;
+        $this->id = $id;
     }
 
     /**
@@ -81,4 +73,21 @@ class AccessToken
     {
         $this->expire_time = $expire_time;
     }
+
+    /**
+     * @return string
+     */
+    public function getAccessToken()
+    {
+        return $this->access_token;
+    }
+
+    /**
+     * @param string $access_token
+     */
+    public function setAccessToken($access_token)
+    {
+        $this->access_token = $access_token;
+    }
+
 }

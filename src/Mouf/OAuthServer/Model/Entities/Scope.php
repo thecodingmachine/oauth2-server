@@ -60,4 +60,12 @@ class Scope
     {
         $this->description = $description;
     }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 }

@@ -22,9 +22,9 @@ class AuthCode
     protected $id;
 
     /**
-     * @var \Mouf\OauthServer\Model\Entities\Session
+     * @var integer
      *
-     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\Session", cascade={"persist"})
+     * @ORM\Column(name="session_id, type="integer", length=25)
      */
     protected $session_id;
 
@@ -66,22 +66,6 @@ class AuthCode
     }
 
     /**
-     * @return OauthSession
-     */
-    public function getSessionId()
-    {
-        return $this->session_id;
-    }
-
-    /**
-     * @param OauthSession $session_id
-     */
-    public function setSessionId($session_id)
-    {
-        $this->session_id = $session_id;
-    }
-
-    /**
      * @return string
      */
     public function getClientRedirectUri()
@@ -103,5 +87,29 @@ class AuthCode
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return Session
+     */
+    public function getSessionId()
+    {
+        return $this->session_id;
+    }
+
+    /**
+     * @param Session $session_id
+     */
+    public function setSessionId($session_id)
+    {
+        $this->session_id = $session_id;
     }
 }

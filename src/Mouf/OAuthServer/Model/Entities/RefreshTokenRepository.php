@@ -3,17 +3,8 @@
 namespace Mouf\OauthServer\Model\Entities;
 
 use League\OAuth2\Server\AbstractServer;
-use League\OAuth2\Server\Entity\AccessTokenEntity;
-use League\OAuth2\Server\Entity\AuthCodeEntity;
 use League\OAuth2\Server\Entity\RefreshTokenEntity;
-use League\OAuth2\Server\Entity\ScopeEntity;
-use League\OAuth2\Server\Entity\SessionEntity;
-use League\OAuth2\Server\Storage\AbstractStorage;
-use League\OAuth2\Server\Storage\AccessTokenInterface;
-use League\OAuth2\Server\Storage\AuthCodeInterface;
-use League\OAuth2\Server\Storage\ClientInterface;
 use League\OAuth2\Server\Storage\RefreshTokenInterface;
-use Mouf\Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
 class RefreshTokenRepository extends EntityRepository implements RefreshTokenInterface
@@ -28,7 +19,12 @@ class RefreshTokenRepository extends EntityRepository implements RefreshTokenInt
      */
     public function get($token)
     {
-        // TODO: Implement get() method.
+        return ($temp = $this->find($token)) ?
+            (new RefreshTokenEntity($this->server))
+                ->setId($temp->getId())
+                ->setExpireTime($temp->getExpireTime())
+                ->setAccessTokenId($temp->getAccessToken()) :
+            null;
     }
 
     /**
@@ -42,7 +38,14 @@ class RefreshTokenRepository extends EntityRepository implements RefreshTokenInt
      */
     public function create($token, $expireTime, $accessToken)
     {
-        // TODO: Implement create() method.
+        $refreshToken = new RefreshToken();
+        $refreshToken->setId($token);
+        $refreshToken->setExpireTime($expireTime);
+        $refreshToken->setAccessToken($accessToken);
+
+        $_em = $this->getEntityManager();
+        $_em->persist($refreshToken);
+        $_em->flush();
     }
 
     /**
@@ -54,16 +57,41 @@ class RefreshTokenRepository extends EntityRepository implements RefreshTokenInt
      */
     public function delete(RefreshTokenEntity $token)
     {
-        // TODO: Implement delete() method.
+        $temp = $this->find($token->getId());
+
+        $_em = $this->getEntityManager();
+        $_em->remove($temp);
+        $_em->flush();
     }
+
+    /**
+     * Server
+     *
+     * @var \League\OAuth2\Server\AbstractServer $server
+     */
+    protected $server;
 
     /**
      * Set the server
      *
      * @param \League\OAuth2\Server\AbstractServer $server
+     *
+     * @return self
      */
     public function setServer(AbstractServer $server)
     {
-        // TODO: Implement setServer() method.
+        $this->server = $server;
+
+        return $this;
+    }
+
+    /**
+     * Return the server
+     *
+     * @return \League\OAuth2\Server\AbstractServer
+     */
+    protected function getServer()
+    {
+        return $this->server;
     }
 }

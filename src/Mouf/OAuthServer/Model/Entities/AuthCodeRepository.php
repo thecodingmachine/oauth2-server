@@ -3,13 +3,9 @@
 namespace Mouf\OauthServer\Model\Entities;
 
 use League\OAuth2\Server\AbstractServer;
-use League\OAuth2\Server\Entity\AccessTokenEntity;
 use League\OAuth2\Server\Entity\AuthCodeEntity;
 use League\OAuth2\Server\Entity\ScopeEntity;
-use League\OAuth2\Server\Storage\AbstractStorage;
-use League\OAuth2\Server\Storage\AccessTokenInterface;
 use League\OAuth2\Server\Storage\AuthCodeInterface;
-use Mouf\Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
 class AuthCodeRepository extends EntityRepository implements AuthCodeInterface
@@ -24,7 +20,7 @@ class AuthCodeRepository extends EntityRepository implements AuthCodeInterface
      */
     public function get($code)
     {
-        // TODO: Implement get() method.
+//        @todo
     }
 
     /**
@@ -39,7 +35,15 @@ class AuthCodeRepository extends EntityRepository implements AuthCodeInterface
      */
     public function create($token, $expireTime, $sessionId, $redirectUri)
     {
-        // TODO: Implement create() method.
+        $authCode = new AuthCode();
+        $authCode->setId($token);
+        $authCode->setExpireTime($expireTime);
+        $authCode->setSessionId($sessionId);
+        $authCode->setClientRedirectUri($redirectUri);
+
+        $_em = $this->getEntityManager();
+        $_em->persist($authCode);
+        $_em->flush();
     }
 
     /**
@@ -76,16 +80,41 @@ class AuthCodeRepository extends EntityRepository implements AuthCodeInterface
      */
     public function delete(AuthCodeEntity $token)
     {
-        // TODO: Implement delete() method.
+        $temp = $this->find($token->getId());
+
+        $_em = $this->getEntityManager();
+        $_em->remove($temp);
+        $_em->flush();
     }
+
+    /**
+     * Server
+     *
+     * @var \League\OAuth2\Server\AbstractServer $server
+     */
+    protected $server;
 
     /**
      * Set the server
      *
      * @param \League\OAuth2\Server\AbstractServer $server
+     *
+     * @return self
      */
     public function setServer(AbstractServer $server)
     {
-        // TODO: Implement setServer() method.
+        $this->server = $server;
+
+        return $this;
+    }
+
+    /**
+     * Return the server
+     *
+     * @return \League\OAuth2\Server\AbstractServer
+     */
+    protected function getServer()
+    {
+        return $this->server;
     }
 }
