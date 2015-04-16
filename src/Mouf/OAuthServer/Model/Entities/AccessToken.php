@@ -38,10 +38,10 @@ class AccessToken
     /**
      * @var \Mouf\OAuthServer\Model\Entities\Scope[]
      *
-     * @ManyToMany(targetEntity="\Mouf\OAuthServer\Model\Entities\Scope")
-     * @JoinTable(name="oauth__access_token_scopes",
-     *      joinColumns={@JoinColumn(name="access_token_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="scope_id", referencedColumnName="id")}
+     * @ORM\ManyToMany(targetEntity="\Mouf\OAuthServer\Model\Entities\Scope")
+     * @ORM\JoinTable(name="oauth__access_token_scopes",
+     *      joinColumns={@ORM\JoinColumn(name="access_token_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="scope_id", referencedColumnName="id")}
      *      )
      **/
     private $scopes;

@@ -25,7 +25,7 @@ class AuthCode
     /**
      * @var integer
      *
-     * @ORM\Column(name="session_id, type="integer", length=25)
+     * @ORM\Column(name="session_time", type="integer", length=25)
      */
     protected $session_id;
 
@@ -46,10 +46,10 @@ class AuthCode
     /**
      * @var \Mouf\OAuthServer\Model\Entities\Scope[]
      *
-     * @ManyToMany(targetEntity="\Mouf\OAuthServer\Model\Entities\Scope")
-     * @JoinTable(name="oauth__auth_code_scopes",
-     *      joinColumns={@JoinColumn(name="auth_code_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="scope_id", referencedColumnName="id")}
+     * @ORM\ManyToMany(targetEntity="\Mouf\OAuthServer\Model\Entities\Scope")
+     * @ORM\JoinTable(name="oauth__auth_code_scopes",
+     *      joinColumns={@ORM\JoinColumn(name="auth_code_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="scope_id", referencedColumnName="id")}
      *      )
      **/
     private $scopes;
