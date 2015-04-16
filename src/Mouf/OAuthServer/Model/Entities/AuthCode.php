@@ -1,6 +1,6 @@
 <?php
 
-namespace Mouf\OauthServer\Model\Entities;
+namespace Mouf\OAuthServer\Model\Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;

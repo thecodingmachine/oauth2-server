@@ -1,6 +1,6 @@
 <?php
 
-namespace Mouf\OauthServer\Model\Entities;
+namespace Mouf\OAuthServer\Model\Entities;
 
 use League\OAuth2\Server\AbstractServer;
 use League\OAuth2\Server\Entity\ClientEntity;
