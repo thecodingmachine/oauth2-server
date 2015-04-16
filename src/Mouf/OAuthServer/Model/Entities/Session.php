@@ -2,15 +2,16 @@
 
 namespace Mouf\OauthServer\Model\Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Account
  *
- * @ORM\Table(name="oauth_sessions")
+ * @ORM\Table(name="oauth__sessions")
  * @ORM\Entity()
  */
-class OauthSession
+class Session
 {
     /**
      * @var integer
@@ -38,7 +39,7 @@ class OauthSession
     /**
      * @var string
      *
-     * @ORM\ManyToOne(targetEntity="\Mouf\OauthServer\Model\Entities\OauthClient", cascade={"persist"})
+     * @ORM\Column(name="client_id", type="string", length=255)
      */
     protected $client_id;
 
@@ -49,12 +50,24 @@ class OauthSession
      */
     protected $client_redirect_uri;
 
+    /**
+     * @var \Mouf\OAuthServer\Model\Entities\Scope[]
+     *
+     * @ManyToMany(targetEntity="\Mouf\OAuthServer\Model\Entities\Scope")
+     * @JoinTable(name="oauth__session_scopes",
+     *      joinColumns={@JoinColumn(name="session_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="scope_id", referencedColumnName="id")}
+     *      )
+     **/
+    private $scopes;
+
 
     /**
      * __construct
      */
     public function __construct()
     {
+        $this->scopes = new ArrayCollection();
     }
 
     /**
@@ -129,5 +142,29 @@ class OauthSession
     public function setClientRedirectUri($client_redirect_uri)
     {
         $this->client_redirect_uri = $client_redirect_uri;
+    }
+
+    /**
+     * @return Scope[]
+     */
+    public function getScopes()
+    {
+        return $this->scopes;
+    }
+
+    /**
+     * @param Scope[] $scopes
+     */
+    public function setScopes($scopes)
+    {
+        $this->scopes = $scopes;
+    }
+
+    /**
+     * @param Scope $scope
+     */
+    public function addScop(Scope $scope)
+    {
+        $this->scopes->add($scope);
     }
 }

@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Account
  *
- * @ORM\Table(name="oauth_scopes")
+ * @ORM\Table(name="oauth__scopes")
  * @ORM\Entity()
  */
-class OauthScope
+class Scope
 {
     /**
      * @var string
@@ -59,5 +59,13 @@ class OauthScope
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 }
