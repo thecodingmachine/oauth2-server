@@ -1,7 +1,6 @@
 <?php
 namespace Mouf\OAuthServer\Controllers;
 
-use League\OAuth2\Server\AuthorizationServer;
 use Mouf\Mvc\Splash\Controllers\Controller;
 
 /**
@@ -9,17 +8,11 @@ use Mouf\Mvc\Splash\Controllers\Controller;
  */
 class AuthCodeGrantController extends Controller {
 
-    /**
-     * @var AuthorizationServer
-     */
-    private $authorizationServer;
 
     /**
      * Controller's constructor.
-     * @param AuthorizationServer $authorizationServer
      */
-    public function __construct(AuthorizationServer $authorizationServer) {
-        $this->authorizationServer = $authorizationServer;
+    public function __construct() {
     }
 
     /**
