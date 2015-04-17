@@ -23,6 +23,7 @@ class OAuthServerInstaller implements PackageInstallerInterface {
         $entityManager = $moufManager->getInstanceDescriptor('entityManager');
 
         // Let's create the instances.
+        InstallUtils::getOrCreateInstance('authorizationCodeGrantController', 'Mouf\\Controllers\\AuthorizationCodeGrantController', $moufManager);
         $accessTokenRepository = InstallUtils::getOrCreateInstance('accessTokenRepository', 'Mouf\\OAuthServer\\Model\\Entities\\AccessTokenRepository', $moufManager);
         $authCodeRepository = InstallUtils::getOrCreateInstance('authCodeRepository', 'Mouf\\OAuthServer\\Model\\Entities\\AuthCodeRepository', $moufManager);
         $clientRepository = InstallUtils::getOrCreateInstance('clientRepository', 'Mouf\\OAuthServer\\Model\\Entities\\ClientRepository', $moufManager);
