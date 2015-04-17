@@ -1,5 +1,5 @@
 <?php
-namespace Mouf\OAuth\Controllers;
+namespace Mouf\OAuthServer\Controllers;
 
 use League\OAuth2\Server\AuthorizationServer;
 use Mouf\Mvc\Splash\Controllers\Controller;
