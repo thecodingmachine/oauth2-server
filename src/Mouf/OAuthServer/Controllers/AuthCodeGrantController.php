@@ -6,7 +6,8 @@ use Mouf\Mvc\Splash\Controllers\Controller;
 /**
  * Authorization server with authorization code grant
  */
-class AuthCodeGrantController extends Controller {
+class AuthCodeGrantController extends Controller
+{
 
 
     /**
