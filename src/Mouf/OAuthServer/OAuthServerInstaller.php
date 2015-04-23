@@ -24,7 +24,7 @@ class OAuthServerInstaller implements PackageInstallerInterface {
         $entityManager = $moufManager->getInstanceDescriptor('entityManager');
 
         // Let's create the instances.
-        $otherGrantController = InstallUtils::getOrCreateInstance('otherGrantController', 'Mouf\\OAuthServer\\Controllers\\OtherGrantController', $moufManager);
+        $oAuthController = InstallUtils::getOrCreateInstance('oAuthController', 'Mouf\\OAuthServer\\Controllers\\OAuthController', $moufManager);
         $authCodeRepository = InstallUtils::getOrCreateInstance('authCodeRepository', 'Mouf\\OAuthServer\\Model\\Entities\\AuthCodeRepository', $moufManager);
         $scopeRepository = InstallUtils::getOrCreateInstance('scopeRepository', 'Mouf\\OAuthServer\\Model\\Entities\\ScopeRepository', $moufManager);
         $refreshTokenRepository = InstallUtils::getOrCreateInstance('refreshTokenRepository', 'Mouf\\OAuthServer\\Model\\Entities\\RefreshTokenRepository', $moufManager);
@@ -44,11 +44,11 @@ class OAuthServerInstaller implements PackageInstallerInterface {
         $anonymousClassMetadata6 = $moufManager->createInstance('Doctrine\\ORM\\Mapping\\ClassMetadata');
 
         // Let's bind instances together.
-        if (!$otherGrantController->getConstructorArgumentProperty('logger')->isValueSet()) {
-            $otherGrantController->getConstructorArgumentProperty('logger')->setValue($psr_errorLogLogger);
+        if (!$oAuthController->getConstructorArgumentProperty('logger')->isValueSet()) {
+            $oAuthController->getConstructorArgumentProperty('logger')->setValue($psr_errorLogLogger);
         }
-        if (!$otherGrantController->getConstructorArgumentProperty('authorizationServer')->isValueSet()) {
-            $otherGrantController->getConstructorArgumentProperty('authorizationServer')->setValue($moufAuthorizationServer);
+        if (!$oAuthController->getConstructorArgumentProperty('authorizationServer')->isValueSet()) {
+            $oAuthController->getConstructorArgumentProperty('authorizationServer')->setValue($moufAuthorizationServer);
         }
         if (!$authCodeRepository->getConstructorArgumentProperty('em')->isValueSet()) {
             $authCodeRepository->getConstructorArgumentProperty('em')->setValue($entityManager);
