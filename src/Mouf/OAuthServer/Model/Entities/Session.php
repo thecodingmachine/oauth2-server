@@ -1,6 +1,6 @@
 <?php
 
-namespace Mouf\OauthServer\Model\Entities;
+namespace Mouf\OAuthServer\Model\Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -53,10 +53,10 @@ class Session
     /**
      * @var \Mouf\OAuthServer\Model\Entities\Scope[]
      *
-     * @ManyToMany(targetEntity="\Mouf\OAuthServer\Model\Entities\Scope")
-     * @JoinTable(name="oauth__session_scopes",
-     *      joinColumns={@JoinColumn(name="session_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="scope_id", referencedColumnName="id")}
+     * @ORM\ManyToMany(targetEntity="\Mouf\OAuthServer\Model\Entities\Scope")
+     * @ORM\JoinTable(name="oauth__session_scopes",
+     *      joinColumns={@ORM\JoinColumn(name="session_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="scope_id", referencedColumnName="id")}
      *      )
      **/
     private $scopes;

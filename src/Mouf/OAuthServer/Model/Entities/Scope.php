@@ -1,6 +1,6 @@
 <?php
 
-namespace Mouf\OauthServer\Model\Entities;
+namespace Mouf\OAuthServer\Model\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 
