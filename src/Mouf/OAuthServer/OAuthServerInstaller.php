@@ -13,6 +13,7 @@ class OAuthServerInstaller implements PackageInstallerInterface {
      * @see \Mouf\Installer\PackageInstallerInterface::install()
      */
     public static function install(MoufManager $moufManager) {
+        RendererUtils::createPackageRenderer($moufManager, "mouf/oauth2-server");
         $doctrineInstallUtils = new DoctrineInstallUtils($moufManager);
 
         $doctrineInstallUtils->registerAnnotationBasedEntities('Mouf\\OAuthServer\\Model\\Entities', 'vendor/mouf/oauth2-server/src/Mouf/OAuthServer/Model/Entities');
@@ -50,6 +51,30 @@ class OAuthServerInstaller implements PackageInstallerInterface {
         if (!$oAuthController->getConstructorArgumentProperty('authorizationServer')->isValueSet()) {
             $oAuthController->getConstructorArgumentProperty('authorizationServer')->setValue($moufAuthorizationServer);
         }
+        
+        
+        //TODO Ajouter les bindings suivants:
+        /*
+        UserServie
+        userService
+        
+        SessionManagerInterface
+        sessionManager
+        
+		SessionRepository
+        sessionRepository
+        
+		AuthorizeView
+		authorizeView
+        
+		TemplateInterface
+        template
+        
+        HtmlBlock
+        content
+        */
+        
+        
         if (!$authCodeRepository->getConstructorArgumentProperty('em')->isValueSet()) {
             $authCodeRepository->getConstructorArgumentProperty('em')->setValue($entityManager);
         }
