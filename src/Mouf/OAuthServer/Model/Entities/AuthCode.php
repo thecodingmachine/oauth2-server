@@ -24,7 +24,7 @@ class AuthCode
     /**
      * @var integer
      *
-     * @ORM\Column(name="session_time", type="integer", length=25)
+     * @ORM\Column(name="session_time", type="integer", length=25, nullable = true)
      */
     protected $session_id;
 

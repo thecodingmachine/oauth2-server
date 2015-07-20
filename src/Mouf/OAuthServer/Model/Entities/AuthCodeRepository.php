@@ -22,10 +22,9 @@ class AuthCodeRepository extends EntityRepository implements AuthCodeInterface
     {
         $temp = $this->createQueryBuilder('a')
             ->where('a.id = :id')
-            ->andWhere('a.expire_time >= NOW()')
-            ->setParameters(array(
-                'id'    => $code
-            ))
+            ->andWhere('a.expire_time >= :date')
+            ->setParameter('id', $code)
+            ->setParameter('date', new \DateTime())
             ->getQuery()
             ->getOneOrNullResult()
             ;
@@ -33,7 +32,7 @@ class AuthCodeRepository extends EntityRepository implements AuthCodeInterface
         if(is_object($temp)){
             $token = new AuthCodeEntity($this->server);
             $token->setId($temp->getId());
-            $token->setRedirectUri($temp->getClientRedirectUri);
+            $token->setRedirectUri($temp->getClientRedirectUri());
             $token->setExpireTime($temp->getExpireTime());
             return $token;
         }

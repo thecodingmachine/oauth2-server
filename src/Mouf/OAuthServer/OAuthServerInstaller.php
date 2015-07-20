@@ -15,7 +15,7 @@ class OAuthServerInstaller implements PackageInstallerInterface {
     public static function install(MoufManager $moufManager) {
         $doctrineInstallUtils = new DoctrineInstallUtils($moufManager);
 
-        $doctrineInstallUtils->registerAnnotationBasedEntities('Mouf\\OauthServer\\Model\\Entities', 'vendor/mouf/oauth2-server/src/Mouf/OAuthServer/Model/Entities');
+        $doctrineInstallUtils->registerAnnotationBasedEntities('Mouf\\OAuthServer\\Model\\Entities', 'vendor/mouf/oauth2-server/src/Mouf/OAuthServer/Model/Entities');
 
         $moufManager = MoufManager::getMoufManager();
 

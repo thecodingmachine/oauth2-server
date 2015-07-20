@@ -9,6 +9,7 @@ use League\OAuth2\Server\Entity\ScopeEntity;
 use League\OAuth2\Server\Entity\SessionEntity;
 use League\OAuth2\Server\Storage\SessionInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 
 class SessionRepository extends EntityRepository implements SessionInterface
 {
@@ -49,7 +50,7 @@ class SessionRepository extends EntityRepository implements SessionInterface
     public function getByAuthCode(AuthCodeEntity $authCode)
     {
         $temp = $this->createQueryBuilder('s')
-            ->join('Mouf\OAuthServer\Model\Entities\AuthCode', 'a', 's.id = a.session_id')
+            ->join('Mouf\OAuthServer\Model\Entities\AuthCode', 'a', Join::WITH, 's.id = a.session_id')
             ->where('a.id = :id')
             ->setParameters(array(
                 'id'    => $authCode->getId()
@@ -75,20 +76,25 @@ class SessionRepository extends EntityRepository implements SessionInterface
      */
     public function getScopes(SessionEntity $session)
     {
-        $temp = $this->find($session->getId());
-
-        $response = array();
-        if(is_object($temp)){
-            foreach($temp->getScopes() as $scp){
-                $scope = (new ScopeEntity($this->server))->hydrate([
-                    'id'            =>  $scp->getId(),
-                    'description'   =>  $scp->getDescription(),
-                ]);
-                $response[] = $scope;
-            }
-        }
-
-        return $response;
+    	if($session->getId() == null) {
+    		return [];
+    	}
+    	else {
+	        $temp = $this->find($session->getId());
+	
+	        $response = array();
+	        if(is_object($temp)){
+	            foreach($temp->getScopes() as $scp){
+	                $scope = (new ScopeEntity($this->server))->hydrate([
+	                    'id'            =>  $scp->getId(),
+	                    'description'   =>  $scp->getDescription(),
+	                ]);
+	                $response[] = $scope;
+	            }
+	        }
+	
+	        return $response;
+    	}
     }
 
     /**
@@ -103,15 +109,26 @@ class SessionRepository extends EntityRepository implements SessionInterface
      */
     public function create($ownerType, $ownerId, $clientId, $clientRedirectUri = null)
     {
-        $session = new Session();
-        $session->setOwnerType($ownerType);
-        $session->setOwnerId($ownerId);
-        $session->setClientId($clientId);
-        $session->setClientRedirectUri($clientRedirectUri);
-
+    	$session = $this->findOneBy(['owner_type' => $ownerType,
+    						'owner_id' => $ownerId,
+    						'client_id' => $clientId
+    					]);
+    	if($session) {
+    		$session->setClientRedirectUri($clientRedirectUri);
+    	}
+    	else {
+	        $session = new Session();
+	        $session->setOwnerType($ownerType);
+	        $session->setOwnerId($ownerId);
+	        $session->setClientId($clientId);
+	        $session->setClientRedirectUri($clientRedirectUri);
+    	}
+    	
         $_em = $this->getEntityManager();
         $_em->persist($session);
         $_em->flush();
+        
+        return $session->getId();
     }
 
     /**
