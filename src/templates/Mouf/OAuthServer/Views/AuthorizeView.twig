@@ -1,0 +1,13 @@
+<h1>{{ this.clientName }} would like to access:</h1>
+<ul>
+	{% for scope in scopes %}
+        <li>
+        	{{ scope.getName() }}: {{ scope.getDescription() }}
+        </li>
+    {% endfor %}
+</ul>
+
+<form method="post">
+    <input type="submit" value="Approve" name="authorization">
+    <input type="submit" value="Deny" name="authorization">
+</form>
