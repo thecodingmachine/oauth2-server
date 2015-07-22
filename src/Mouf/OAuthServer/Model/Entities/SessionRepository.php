@@ -23,7 +23,7 @@ class SessionRepository extends EntityRepository implements SessionInterface
     public function getByAccessToken(AccessTokenEntity $accessToken)
     {
         $temp = $this->createQueryBuilder('s')
-            ->join('Mouf\OAuthServer\Model\Entities\AccessToken', 'a', 's.id = a.session_id')
+            ->join('Mouf\OAuthServer\Model\Entities\AccessToken', 'a', Join::WITH, 's.id = a.session_id')
             ->where('a.id = :id')
             ->setParameters(array(
                 'id'    => $accessToken->getId()

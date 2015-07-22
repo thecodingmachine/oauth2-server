@@ -5,6 +5,7 @@ use Mouf\Actions\InstallUtils;
 use Mouf\Doctrine\ORM\Admin\DoctrineInstallUtils;
 use Mouf\Installer\PackageInstallerInterface;
 use Mouf\MoufManager;
+use Mouf\Html\Renderer\RendererUtils;
 
 class OAuthServerInstaller implements PackageInstallerInterface {
 
@@ -26,6 +27,7 @@ class OAuthServerInstaller implements PackageInstallerInterface {
 
         // Let's create the instances.
         $oAuthController = InstallUtils::getOrCreateInstance('oAuthController', 'Mouf\\OAuthServer\\Controllers\\OAuthController', $moufManager);
+        $authorizeView = InstallUtils::getOrCreateInstance('authorizeView', 'Mouf\\OAuthServer\\Views\\AuthorizeView', $moufManager);
         $authCodeRepository = InstallUtils::getOrCreateInstance('authCodeRepository', 'Mouf\\OAuthServer\\Model\\Entities\\AuthCodeRepository', $moufManager);
         $scopeRepository = InstallUtils::getOrCreateInstance('scopeRepository', 'Mouf\\OAuthServer\\Model\\Entities\\ScopeRepository', $moufManager);
         $refreshTokenRepository = InstallUtils::getOrCreateInstance('refreshTokenRepository', 'Mouf\\OAuthServer\\Model\\Entities\\RefreshTokenRepository', $moufManager);
@@ -45,35 +47,11 @@ class OAuthServerInstaller implements PackageInstallerInterface {
         $anonymousClassMetadata6 = $moufManager->createInstance('Doctrine\\ORM\\Mapping\\ClassMetadata');
 
         // Let's bind instances together.
-        if (!$oAuthController->getConstructorArgumentProperty('logger')->isValueSet()) {
-            $oAuthController->getConstructorArgumentProperty('logger')->setValue($psr_errorLogLogger);
-        }
-        if (!$oAuthController->getConstructorArgumentProperty('authorizationServer')->isValueSet()) {
-            $oAuthController->getConstructorArgumentProperty('authorizationServer')->setValue($moufAuthorizationServer);
-        }
-        
-        
-        //TODO Ajouter les bindings suivants:
-        /*
-        UserServie
-        userService
-        
-        SessionManagerInterface
-        sessionManager
-        
-		SessionRepository
-        sessionRepository
-        
-		AuthorizeView
-		authorizeView
-        
-		TemplateInterface
-        template
-        
-        HtmlBlock
-        content
-        */
-        
+                
+        $userService = $moufManager->getInstanceDescriptor('userService');
+        $sessionManager = $moufManager->getInstanceDescriptor('sessionManager');
+        $bootstrapTemplate = $moufManager->getInstanceDescriptor('bootstrapTemplate');
+        $block_content = $moufManager->getInstanceDescriptor('block.content');
         
         if (!$authCodeRepository->getConstructorArgumentProperty('em')->isValueSet()) {
             $authCodeRepository->getConstructorArgumentProperty('em')->setValue($entityManager);
@@ -139,6 +117,58 @@ class OAuthServerInstaller implements PackageInstallerInterface {
         $anonymousClassMetadata5->getConstructorArgumentProperty('entityName')->setValue('Mouf\\OAuthServer\\Model\\Entities\\AccessToken');
         $anonymousClassMetadata6->getConstructorArgumentProperty('entityName')->setValue('Mouf\\OAuthServer\\Model\\Entities\\Session');
 
+        
+        $oauthRightService = InstallUtils::getOrCreateInstance('oauthRightService', 'Mouf\\OAuthServer\\Service\\OAuthRightsService', $moufManager);
+        $oauthUserService = InstallUtils::getOrCreateInstance('oauthUserService', 'Mouf\\OAuthServer\\Service\\OAuthUserService', $moufManager);
+        $resourceServer = InstallUtils::getOrCreateInstance('resourceServer', 'League\\OAuth2\\Server\\ResourceServer', $moufManager);
+        
+        // oAuthController
+        if (!$oAuthController->getConstructorArgumentProperty('logger')->isValueSet()) {
+        	$oAuthController->getConstructorArgumentProperty('logger')->setValue($psr_errorLogLogger);
+        }
+        if (!$oAuthController->getConstructorArgumentProperty('authorizationServer')->isValueSet()) {
+        	$oAuthController->getConstructorArgumentProperty('authorizationServer')->setValue($moufAuthorizationServer);
+        }
+        if (!$oAuthController->getConstructorArgumentProperty('userService')->isValueSet()) {
+        	$oAuthController->getConstructorArgumentProperty('userService')->setValue($userService);
+        }
+        if (!$oAuthController->getConstructorArgumentProperty('sessionManager')->isValueSet()) {
+        	$oAuthController->getConstructorArgumentProperty('sessionManager')->setValue($sessionManager);
+        }
+        if (!$oAuthController->getConstructorArgumentProperty('sessionRepository')->isValueSet()) {
+        	$oAuthController->getConstructorArgumentProperty('sessionRepository')->setValue($sessionRepository);
+        }
+        if (!$oAuthController->getConstructorArgumentProperty('template')->isValueSet()) {
+        	$oAuthController->getConstructorArgumentProperty('template')->setValue($bootstrapTemplate);
+        }
+        if (!$oAuthController->getConstructorArgumentProperty('content')->isValueSet()) {
+        	$oAuthController->getConstructorArgumentProperty('content')->setValue($block_content);
+        }
+        if (!$oAuthController->getConstructorArgumentProperty('authorizeView')->isValueSet()) {
+        	$oAuthController->getConstructorArgumentProperty('authorizeView')->setValue($authorizeView);
+        }
+        
+        
+        // Let's bind instances together.
+        if (!$oauthRightService->getConstructorArgumentProperty('resourceServer')->isValueSet()) {
+        	$oauthRightService->getConstructorArgumentProperty('resourceServer')->setValue($resourceServer);
+        }
+        if (!$oauthUserService->getConstructorArgumentProperty('resourceServer')->isValueSet()) {
+        	$oauthUserService->getConstructorArgumentProperty('resourceServer')->setValue($resourceServer);
+        }
+        if (!$resourceServer->getConstructorArgumentProperty('sessionStorage')->isValueSet()) {
+        	$resourceServer->getConstructorArgumentProperty('sessionStorage')->setValue($sessionRepository);
+        }
+        if (!$resourceServer->getConstructorArgumentProperty('accessTokenStorage')->isValueSet()) {
+        	$resourceServer->getConstructorArgumentProperty('accessTokenStorage')->setValue($accessTokenRepository);
+        }
+        if (!$resourceServer->getConstructorArgumentProperty('clientStorage')->isValueSet()) {
+        	$resourceServer->getConstructorArgumentProperty('clientStorage')->setValue($clientRepository);
+        }
+        if (!$resourceServer->getConstructorArgumentProperty('scopeStorage')->isValueSet()) {
+        	$resourceServer->getConstructorArgumentProperty('scopeStorage')->setValue($scopeRepository);
+        }
+        
 
         $moufManager->rewriteMouf();
     }
