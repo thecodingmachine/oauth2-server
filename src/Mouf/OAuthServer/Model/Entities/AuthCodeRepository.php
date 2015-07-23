@@ -99,7 +99,7 @@ class AuthCodeRepository extends EntityRepository implements AuthCodeInterface
     {
         $_em = $this->getEntityManager();
         $tempToken = $this->find($token->getId());
-        $tempScope = $this->getEntityManager()->getRepository('Mouf\OAuthServer\Model\Entities\ScopeRepository')->find($scope->getId());
+        $tempScope = $this->getEntityManager()->getRepository('Mouf\OAuthServer\Model\Entities\Scope')->find($scope->getId());
 
         if(is_object($tempToken) && is_object($tempScope)){
             $tempToken->addScope($tempScope);

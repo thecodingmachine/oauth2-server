@@ -14,6 +14,7 @@ use Mouf\OAuthServer\Model\Entities\SessionRepository;
 use Mouf\Html\Template\TemplateInterface;
 use Mouf\Html\HtmlElement\HtmlBlock;
 use Mouf\OAuthServer\Views\AuthorizeView;
+use League\OAuth2\Server\Entity\ScopeEntity;
 
 /**
  * Client credentials grant controller
@@ -146,12 +147,45 @@ class OAuthController extends Controller {
     	}
     	
     	$this->sessionManager->start();
-    	$authParams['client']->hydrate(['server' => null]);
+    	$authParams = $this->removeUnserializeElement($authParams);
+
     	$_SESSION['oauth__server__authParams'] = $authParams;
     	// Everything is okay, save $authParams to the a session and redirect the user to sign-in
     	return new RedirectResponse(ROOT_URL.'signin');
     }
     
+    /**
+     * This function to remove the object server on the
+     * authentification parmeters to set it in session
+     * 
+     * @param array $authParams
+     * @return array
+     */
+    private function removeUnserializeElement($authParams) {
+    	$authParams['client']->hydrate(['server' => null]);
+    	foreach ($authParams['scopes'] as $scope) {
+    		/* @var $scope ScopeEntity */
+    		$scope->hydrate(['server' => null]);
+    	}
+    	return $authParams;
+    }
+    
+    /**
+     * This function to add the object server on the
+     * authentification parmeters (from the session)
+     *
+     * @param array $authParams
+     * @return array
+     */
+    private function addUnserializeElement($authParams) {
+    	$authParams['client']->hydrate(['server' => $this->authorizationServer]);
+
+    	foreach ($authParams['scopes'] as $scope) {
+    		/* @var $scope ScopeEntity */
+    		$scope->hydrate(['server' => $this->authorizationServer]);
+    	}
+    	return $authParams;
+    }
 
     /**
      * @URL /signin
@@ -180,11 +214,13 @@ class OAuthController extends Controller {
     	$this->sessionManager->start();
 
     	$authParams = $_SESSION['oauth__server__authParams'];
+    	$this->sessionManager->write_close();
     	
     	$session = $this->sessionRepository->findOneBy(['owner_id' => $this->userService->getUserId(),
     			'client_id' => $authParams['client']->getName()
     	]);
     	if($session) {
+    		$authParams = $this->addUnserializeElement($authParams);
     		return $this->redirectToUrl($authParams);
     	}
     	else {
@@ -209,7 +245,7 @@ class OAuthController extends Controller {
     	$this->sessionManager->start();
     	$authParams = $_SESSION['oauth__server__authParams'];
     	$this->sessionManager->write_close();
-    	$authParams['client']->hydrate(['server' => $this->authorizationServer]);
+    	$authParams = $this->addUnserializeElement($authParams);
     	
 	    // If the user authorizes the request then redirect the user back with an authorization code
 	    if ($_POST['authorization'] === 'Approve') {
