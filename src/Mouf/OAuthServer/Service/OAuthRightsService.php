@@ -77,8 +77,10 @@ class OAuthRightsService implements RightsServiceInterface {
 	 * @param mixed $scope
 	*/
 	public function redirectNotAuthorized($right, $scope = null) {
-		header('HTTP/1.0 403 Forbidden');
-		exit;
+		if(!$this->isAllowed($right, $scope)) {
+			header('HTTP/1.0 403 Forbidden');
+			exit;
+		}
 	}
 
 }

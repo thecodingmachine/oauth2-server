@@ -143,9 +143,9 @@ class SessionRepository extends EntityRepository implements SessionInterface
     {
         $_em = $this->getEntityManager();
         $tempSession = $this->find($session->getId());
-        $tempScope = $this->getEntityManager()->getRepository('Mouf\OAuthServer\Model\Entities\ScopeRepository')->find($scope->getId());
+        $tempScope = $this->getEntityManager()->getRepository('Mouf\OAuthServer\Model\Entities\Scope')->find($scope->getId());
 
-        if(is_object($tempSession) && is_object($tempScope)){
+        if($tempSession && $tempScope){
             $tempSession->addScope($tempScope);
             $_em->persist($tempSession);
             $_em->flush();

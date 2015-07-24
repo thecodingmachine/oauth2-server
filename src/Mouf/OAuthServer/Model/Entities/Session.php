@@ -163,8 +163,19 @@ class Session
     /**
      * @param Scope $scope
      */
-    public function addScop(Scope $scope)
+    public function addScope(Scope $scope)
     {
-        $this->scopes->add($scope);
+    	if(!$this->hasScope($scope)) {
+        	$this->scopes->add($scope);
+    	}
+    }
+    
+    public function hasScope(Scope $scopeSearch) {
+    	foreach ($this->scopes as $scope) {
+    		if($scope->getId() == $scopeSearch->getId()) {
+    			return true;
+    		}
+    	}
+    	return false;
     }
 }
