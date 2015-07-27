@@ -178,12 +178,16 @@ class OAuthController extends Controller {
      * @return array
      */
     private function addUnserializeElement($authParams) {
+    	$authParams['client'] = clone $authParams['client'];
     	$authParams['client']->hydrate(['server' => $this->authorizationServer]);
 
-    	foreach ($authParams['scopes'] as $scope) {
+    	$authParams['scopes'] = array_map(function($scope) {
     		/* @var $scope ScopeEntity */
+    		$scope = clone $scope;
     		$scope->hydrate(['server' => $this->authorizationServer]);
-    	}
+    		return $scope;
+    	}, $authParams['scopes']);
+
     	return $authParams;
     }
 
@@ -214,7 +218,6 @@ class OAuthController extends Controller {
     	$this->sessionManager->start();
 
     	$authParams = $_SESSION['oauth__server__authParams'];
-    	$this->sessionManager->write_close();
     	
     	$session = $this->sessionRepository->findOneBy(['owner_id' => $this->userService->getUserId(),
     			'client_id' => $authParams['client']->getName()
@@ -244,17 +247,16 @@ class OAuthController extends Controller {
 
     	$this->sessionManager->start();
     	$authParams = $_SESSION['oauth__server__authParams'];
-    	$this->sessionManager->write_close();
-    	$authParams = $this->addUnserializeElement($authParams);
     	
 	    // If the user authorizes the request then redirect the user back with an authorization code
 	    if ($_POST['authorization'] === 'Approve') {
+	    	$authParams = $this->addUnserializeElement($authParams);
 	    	return $this->redirectToUrl($authParams);
 	    }
 	    
 	    // The user denied the request so redirect back with a message
 	    else {
-	    
+	    	$this->userService->logoff();
 	    	$error = new AccessDeniedException();
 	    	$redirectUri = \League\OAuth2\Server\Util\RedirectUri::make(
 	    			$authParams['redirect_uri'],
@@ -263,7 +265,6 @@ class OAuthController extends Controller {
 	    					'message'   =>  $error->getMessage()
 	    			]
 	    	);
-	    
 	    	$response = new RedirectResponse($redirectUri);
 	    
 	    	return $response;
