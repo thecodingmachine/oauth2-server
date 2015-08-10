@@ -55,7 +55,7 @@ class ClientRepository extends EntityRepository implements ClientInterface
     public function getBySession(SessionEntity $session)
     {
         $temp = $this->createQueryBuilder('c')
-            ->join('Mouf\OAuthServer\Model\Entities\Session', 's', 'c.id = s.client_id')
+            ->join('Mouf\OAuthServer\Model\Entities\Session', 's', 'WITH','c.id = s.client_id')
             ->where('s.id = :id')
             ->setParameters(array(
                 'id'    => $session->getId()

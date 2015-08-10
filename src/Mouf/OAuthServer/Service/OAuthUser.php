@@ -33,4 +33,11 @@ class OAuthUser implements UserInterface {
 	public function getLogin() {
 		return $this->sessionEntity->getOwnerId();
 	}
+
+    /**
+     *
+     */
+    public function getClient() {
+        return $this->sessionEntity->getClient();
+    }
 }
