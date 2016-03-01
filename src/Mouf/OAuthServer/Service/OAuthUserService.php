@@ -1,9 +1,11 @@
 <?php
 namespace Mouf\OAuthServer\Service;
 
+use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Mouf\Security\UserService\UserServiceInterface;
 use League\OAuth2\Server\ResourceServer;
 use League\OAuth2\Server\Exception\AccessDeniedException;
+use League\OAuth2\Server\Exception\InvalidRequestException;
 
 class OAuthUserService implements UserServiceInterface {
 	
@@ -62,6 +64,9 @@ class OAuthUserService implements UserServiceInterface {
 			$this->resourceServer->isValidRequest(false);
 		}
 		catch (AccessDeniedException $e) {
+			return false;
+		}
+		catch (InvalidRequestException $e) {
 			return false;
 		}
 		return true;
