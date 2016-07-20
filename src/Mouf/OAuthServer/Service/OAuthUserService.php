@@ -112,13 +112,13 @@ class OAuthUserService implements UserServiceInterface {
 	/**
 	 * Returns the user that is logged (or null if no user is logged).
 	 *
-	 * return UserInterface
+	 * return UserInterface|null
 	*/
 	public function getLoggedUser() {
 		$sessionEntity = $this->getSessionEntity();
 
 		if ($sessionEntity) {
-			return new OAuthUser($this->getSessionEntity());
+			return new OAuthUser($sessionEntity);
 		} else {
 			return null;
 		}
