@@ -39,6 +39,7 @@ class OAuthServerInstaller implements PackageInstallerInterface {
         $clientCredentialsGrant = InstallUtils::getOrCreateInstance('clientCredentialsGrant', 'League\\OAuth2\\Server\\Grant\\ClientCredentialsGrant', $moufManager);
         $authCodeGrant = InstallUtils::getOrCreateInstance('authCodeGrant', 'League\\OAuth2\\Server\\Grant\\AuthCodeGrant', $moufManager);
         $moufAuthorizationServer = InstallUtils::getOrCreateInstance('moufAuthorizationServer', 'Mouf\\OAuthServer\\Server\\MoufAuthorizationServer', $moufManager);
+        $httpFoundationFactory = InstallUtils::getOrCreateInstance('httpFoundationFactory', 'Symfony\\Bridge\\PsrHttpMessage\\Factory\\HttpFoundationFactory;', $moufManager);
         $anonymousClassMetadata = $moufManager->createInstance('Doctrine\\ORM\\Mapping\\ClassMetadata');
         $anonymousClassMetadata2 = $moufManager->createInstance('Doctrine\\ORM\\Mapping\\ClassMetadata');
         $anonymousClassMetadata3 = $moufManager->createInstance('Doctrine\\ORM\\Mapping\\ClassMetadata');
@@ -146,6 +147,9 @@ class OAuthServerInstaller implements PackageInstallerInterface {
         }
         if (!$oAuthController->getConstructorArgumentProperty('authorizeView')->isValueSet()) {
         	$oAuthController->getConstructorArgumentProperty('authorizeView')->setValue($authorizeView);
+        }
+        if (!$oAuthController->getConstructorArgumentProperty('httpFoundationFactory')->isValueSet()) {
+            $oAuthController->getConstructorArgumentProperty('httpFoundationFactory')->setValue($httpFoundationFactory);
         }
         
         
