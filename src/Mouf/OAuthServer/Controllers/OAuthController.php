@@ -2,11 +2,8 @@
 namespace Mouf\OAuthServer\Controllers;
 
 use League\OAuth2\Server\AuthorizationServer;
-use Mouf\Mvc\Splash\Controllers\Controller;
+
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Mouf\Security\UserService\UserService;
 use League\OAuth2\Server\Exception\AccessDeniedException;
 use Mouf\Utils\Session\SessionManager\SessionManagerInterface;
@@ -15,11 +12,18 @@ use Mouf\Html\Template\TemplateInterface;
 use Mouf\Html\HtmlElement\HtmlBlock;
 use Mouf\OAuthServer\Views\AuthorizeView;
 use League\OAuth2\Server\Entity\ScopeEntity;
+use Mouf\Mvc\Splash\Annotations\URL;
+use Mouf\Mvc\Splash\Annotations\Get;
+use Mouf\Mvc\Splash\Annotations\Post;
+use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\RedirectResponse;
 
 /**
  * Client credentials grant controller
  */
-class OAuthController extends Controller {
+class OAuthController {
 
     /**
      * The logger used by this controller.
@@ -63,16 +67,22 @@ class OAuthController extends Controller {
     private $content;
 
     /**
+     * @var HttpFoundationFactory
+     */
+    private $httpFoundationFactory;
+
+    /**
      * Controller's constructor.
      * @param LoggerInterface $logger The logger
      * @param AuthorizationServer $authorizationServer
      * @param UserService $userService
      * @param SessionManagerInterface $sessionManager
+     * @param HttpFoundationFactory $httpFoundationFactory
      */
     public function __construct(LoggerInterface $logger, AuthorizationServer $authorizationServer,
     							UserService $userService, SessionManagerInterface $sessionManager,
     							SessionRepository $sessionRepository, TemplateInterface $template,
-    							HtmlBlock $content, AuthorizeView $authorizeView) {
+    							HtmlBlock $content, AuthorizeView $authorizeView, HttpFoundationFactory $httpFoundationFactory) {
         $this->logger = $logger;
         $this->authorizationServer = $authorizationServer;
         $this->userService = $userService;
@@ -81,16 +91,18 @@ class OAuthController extends Controller {
         $this->template = $template;
         $this->content = $content;
         $this->authorizeView = $authorizeView;
+        $this->httpFoundationFactory = $httpFoundationFactory;
     }
 
     /**
-     * @URL /access_token
-     * @Post
-     * @param Request $request
+     * @Post()
+     * @URL ("access_token")
+     *
+     * @param ServerRequestInterface $request
      * @return JsonResponse
      */
-    public function accessToken(Request $request) {
-        $this->authorizationServer->setRequest($request);
+    public function accessToken(ServerRequestInterface $request) {
+        $this->authorizationServer->setRequest($this->httpFoundationFactory->createRequest($request));
 
         try {
 
@@ -118,12 +130,13 @@ class OAuthController extends Controller {
     }
     
     /**
-     * @URL /oauth
-     * @Get
-     * @param Request $request
-     * @return JsonResponse
+     * @Get()
+     * @URL("oauth")
+     *
+     * @param ServerRequestInterface $request
+     * @return JsonResponse|RedirectResponse
      */
-    public function oauth(Request $request) {
+    public function oauth(ServerRequestInterface $request) {
     	// First ensure the parameters in the query string are correct
     	try {
     	
@@ -192,12 +205,13 @@ class OAuthController extends Controller {
     }
 
     /**
-     * @URL /signin
-     * @Get
-     * @param Request $request
-     * @return JsonResponse
+     * @Get()
+     * @URL("signin")
+     *
+     * @param ServerRequestInterface $request
+     * @return JsonResponse|RedirectResponse
      */
-    public function signin(Request $request) {
+    public function signin(ServerRequestInterface $request) {
     	
     	if ($this->userService->isLogged()) {
    			return new RedirectResponse(ROOT_URL.'authorize');
@@ -208,12 +222,13 @@ class OAuthController extends Controller {
     }
 
     /**
-     * @URL /authorize
-     * @Get
-     * @param Request $request
-     * @return JsonResponse
+     * @Get()
+     * @URL("authorize")
+     *
+     * @param ServerRequestInterface $request
+     * @return JsonResponse|RedirectResponse
      */
-    public function authorize(Request $request) {
+    public function authorize(ServerRequestInterface $request) {
 
     	$this->sessionManager->start();
 
@@ -238,12 +253,13 @@ class OAuthController extends Controller {
     }
 
     /**
-     * @URL /authorize
-     * @Post
-     * @param Request $request
-     * @return JsonResponse
+     * @Post()
+     * @URL("authorize")
+     *
+     * @param ServerRequestInterface $request
+     * @return JsonResponse|RedirectResponse
      */
-    public function signinAuthorization(Request $request) {
+    public function signinAuthorization(ServerRequestInterface $request) {
 
     	$this->sessionManager->start();
     	$authParams = $_SESSION['oauth__server__authParams'];
@@ -270,7 +286,11 @@ class OAuthController extends Controller {
 	    	return $response;
 	    }
     }
-    
+
+    /**
+     * @param $authParams
+     * @return RedirectResponse
+     */
     public function redirectToUrl($authParams) {
 
     	$redirectUri = $this->authorizationServer->getGrantType('authorization_code')->newAuthorizeRequest('user', $this->userService->getUserId(), $authParams);
